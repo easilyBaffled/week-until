@@ -1,8 +1,11 @@
 import ical from 'ical';
+import './style.css';
 import danny from './calendars/danny.ics?raw';
 const calendars = import.meta.glob('./calendars/*.ics', { as: 'raw' });
 
-console.log(calendars); //.then(console.log);
+console.tap = (v, ...rest) => (console.log(v, ...rest), v);
+
+console.log(calendars);
 
 Promise.all(Object.values(calendars).map((fn) => fn()))
   .then((cals) =>
@@ -19,8 +22,10 @@ Promise.all(Object.values(calendars).map((fn) => fn()))
       )
       .map((e) => {
         e.html = e.weeksUntil
-          ? `<tr><td>${e.summary}</td> <td>in ${e.weeksUntil} weeks</td></tr>`
-          : `<tr><td>${e.summary}</td> <td>this week</td></tr>`;
+          ? `<tr style="--font-size: ${1 / e.weeksUntil}rem;"><td>${
+              e.summary
+            }</td> <td>in ${e.weeksUntil} weeks</td></tr>`
+          : `<tr style="--font-size: 1rem;"><td>${e.summary}</td> <td>this week</td></tr>`;
         return e;
       })
   )
@@ -45,7 +50,8 @@ function pick(...keys) {
 const orderDates = (a, b) => a - b;
 
 function getCalendar(eventStr) {
-  const events = Object.values(ical.parseICS(danny));
+  const events = Object.values(ical.parseICS(eventStr));
+  console.log(events);
   return events.filter((event) => new Date(event.start) >= Date.now());
 }
 
