@@ -30,5 +30,5 @@ body {
 }
 
 tr {
-  font-size: var(--font-size);
+  font-size: calc(0.75rem+var(--font-size));
 }
